@@ -1,5 +1,6 @@
 import '../App.css';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link';
@@ -50,9 +51,15 @@ const content=` `
 
 
 const TipTap = ({onhandleEditorContentSave}) => {
+  const [wordCount, setWordCount] = useState(0);
     const editor = useEditor({
         extensions,
-        content
+        content,
+        onUpdate: ({ editor }) => {
+          const text = editor.getText();
+          const count = text.trim().split(/\s+/).filter(Boolean).length;
+          setWordCount(count);
+        },
     })
     if(!editor){
         return null
@@ -267,6 +274,9 @@ const TipTap = ({onhandleEditorContentSave}) => {
         <EditorContent editor={editor}   />
       </div>
       <button onClick={handleEditorContent} className='save-button'>Save</button>
+      <div style={{ marginTop: '10px', fontWeight: 'bold' }}>
+        Word Count: {wordCount}
+      </div>
     </div>
   )
 }
